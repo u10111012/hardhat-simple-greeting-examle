@@ -1,19 +1,40 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
+const {expect} = require("chai");
+const {ethers} = require("hardhat");
 
-describe("Greeter", function () {
-  it("Should return the new greeting once it's changed", async function () {
-    const Greeter = await ethers.getContractFactory("Greeter");
-    const greeter = await Greeter.deploy("Hello, world!");
-    await greeter.deployed();
+describe("Manager", function () {
+    let Manager;
+    let manager;
 
-    expect(await greeter.greet()).to.equal("Hello, world!");
+    before(async function () {
+        Manager = await ethers.getContractFactory("Manager");
+        manager = await Manager.deploy();
+        await manager.deployed();
+    });
 
-    const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
+    it("Should create a new ticket", async function () {
+        await manager.createTicket("Leo");
+        let tickets = await manager.getTickets();
+        expect(tickets[0].name).to.equal("Leo");
+    });
 
-    // wait until the transaction is mined
-    await setGreetingTx.wait();
+    it("Should update the ticket name", async function () {
+        await manager.updateTicketName(0, "New Leo");
+        let tickets = await manager.getTickets();
+        expect(tickets[0].name).to.equal("New Leo");
+    });
 
-    expect(await greeter.greet()).to.equal("Hola, mundo!");
-  });
+    it("Should update the ticket status", async function () {
+        await manager.updateTicketStatus(0, 3);
+        let tickets = await manager.getTickets();
+        expect(tickets[0].status).to.equal(3);
+    });
+
+    it("Should return a list of tickets", async function () {
+        await manager.createTicket("My new Ticket");
+        await manager.createTicket("My new Ticket");
+        await manager.createTicket("My new Ticket");
+        let tickets = await manager.getTickets();
+        expect(tickets.length).to.equal(4)
+    });
+
 });
