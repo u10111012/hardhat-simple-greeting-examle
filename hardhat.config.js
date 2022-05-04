@@ -25,9 +25,9 @@ module.exports = {
     hardhat:{
       chainId:1337,
     },
-    rinkeby:{
-      url:"infura rinkeby url",
-      accounts:['your api key with metamask'],
-    }
+    // rinkeby:{
+    //   url:"",
+    //   accounts:[''],
+    // }
   },
 };
